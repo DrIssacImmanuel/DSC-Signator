@@ -1,6 +1,6 @@
 # DSC Signator — Bulk PDF Digital Signature Tool
 
-A Windows desktop app to digitally sign multiple PDF files in bulk using a USB DSC (Digital Signature Certificate) token. No Python installation required.
+A Windows desktop app that signs every PDF in a folder with a USB DSC (Digital Signature Certificate) token. It runs as a single `.exe`, so the PC needs no Python.
 
 ---
 
@@ -10,32 +10,46 @@ A Windows desktop app to digitally sign multiple PDF files in bulk using a USB D
 
 ---
 
-## How to Use
+## How to use
 
-1. **Run** `BulkPDFDSCSigner.exe` — fully portable, no installation needed
-2. **Screen 1 — Select Folders**: Browse and add one or more folders containing PDFs to sign (sub-folders are included automatically)
-3. **Screen 2 — Authenticate**: Insert your USB DSC token and enter your PIN
-4. **Screen 3 — Progress**: Watch live file-by-file progress — app closes automatically after 15 seconds on success
+1. Plug in the DSC token.
+2. Run `BulkPDFDSCSigner.exe`. A file picker opens.
+3. Select any PDF. The app lists every PDF in that folder. Tick **Include sub-folders** if you want those too.
+4. Check the certificate under **Signature**. If the token was plugged in after the app started, click **Refresh**.
+5. Click **Sign**. The token driver asks for the PIN, the same prompt you get in Adobe Acrobat.
+6. Watch the **Status** column. Each file shows Signed, a skip reason, or an error.
+
+The signed copy replaces the original file. Keep a backup if you need the unsigned version.
+
+---
+
+## What it does
+
+- Puts a visible signature on page 1, in the top-right corner, 24 points in from the edges.
+- The stamp reads "Digitally signed by <name on the certificate>" with the date and time of the PC.
+- Works on rotated and cropped pages. The stamp stays upright in the visible top-right corner.
+- Skips a PDF that already has a signature from the same certificate, so running it twice does not stamp twice.
+- Skips password-protected and unreadable PDFs and says why.
+- Asks for the PIN once, before it touches any file. If the PIN is wrong or you cancel, nothing changes and the app stops, so a bad PIN cannot be tried again on every file.
+- Writes each signed file to a temporary copy first, then swaps it in. A failure halfway through a file leaves the original intact.
+
+---
+
+## How it finds the token
+
+The app reads the certificate from the Windows certificate store, which is where the token driver (for example PROXKey) publishes it when the token is plugged in. Windows and the driver do the signing. This is the route Adobe Acrobat takes, so if Acrobat can sign with the token on that PC, this app should be able to as well.
+
+If the certificate does not appear in the list, tick **My certificate is not in the list. Use the token driver (PKCS#11).** Then give the path to the driver DLL (for PROXKey, `C:\Windows\System32\Watchdata\PROXKey CSP India V3.0\WDPKCS.dll`) and type the PIN in the app.
 
 ---
 
 ## Requirements
 
-- Windows 10 / 11 (64-bit)
-- A USB DSC token with its PKCS#11 driver installed (provided by your token manufacturer)
+- Windows 10 or 11, 64-bit
+- A USB DSC token with its driver installed
 
 ---
 
-## What It Does
+## Tech stack
 
-- Recursively finds all PDF files in selected folders
-- Places a digital signature stamp (bottom-right corner, Page 1) with your certificate name and IST timestamp
-- Signs files **in-place** using PKCS#7 detached signature format (Adobe-compatible)
-- Reads signer name directly from the certificate on the token
-
----
-
-## Tech Stack
-
-Built with Python · pyHanko · python-pkcs11 · cryptography · pypdf · Tkinter  
-Packaged as a standalone Windows executable via PyInstaller
+Built with Python, pyHanko, python-pkcs11, asn1crypto and Tkinter.
