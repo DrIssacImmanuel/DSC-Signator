@@ -12,6 +12,8 @@ A Windows desktop app that signs every PDF in a folder with a USB DSC (Digital S
 
 ## How to use
 
+New here? The [step-by-step guide](HOW-TO-USE.md) starts at the download and covers the Windows SmartScreen warning.
+
 The app has three panels. A folder picker opens when it starts.
 
 1. **Folders.** Pick the folder that holds the PDFs. The app lists every PDF in it and in its sub-folders. If it finds PDFs two or more levels down, a notice names those folders and lets you exclude them.
