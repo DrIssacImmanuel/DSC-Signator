@@ -15,8 +15,8 @@ A Windows desktop app that signs every PDF in a folder with a USB DSC (Digital S
 The app has three panels. A folder picker opens when it starts.
 
 1. **Folders.** Pick the folder that holds the PDFs. The app lists every PDF in it and in its sub-folders. If it finds PDFs two or more levels down, a notice names those folders and lets you exclude them.
-2. **Signature.** Check the certificate, choose which corner of page 1 gets the stamp (top right by default), and type the token PIN. If the token was plugged in after the app started, click **Refresh**.
-3. **Sign.** The token checks the PIN, then the app signs the files and shows the result for each one. When it finishes, **Open folder and close** opens the folder and quits.
+2. **Signature.** Check the certificate, and choose which corner of page 1 gets the stamp (top right by default). If the token was plugged in after the app started, click **Refresh**.
+3. **Sign.** The token driver asks for the PIN in its own prompt, the same one you get in Adobe Acrobat. Then the app signs the files and shows the result for each one. When it finishes, **Open folder and close** opens the folder and quits.
 
 The signed copy replaces the original file. Keep a backup if you need the unsigned version.
 
@@ -35,7 +35,6 @@ The moon button at the top right switches to a dark theme. The app remembers you
 ## Safety
 
 - The token checks the PIN once, before any file is touched. A wrong or cancelled PIN stops the run and nothing changes, so a bad PIN is never retried on every file.
-- If you leave the PIN field empty, the token driver shows its own PIN prompt instead.
 - A PDF that already has a signature from the same certificate is skipped, so running the app twice does not stamp twice.
 - Password-protected and unreadable PDFs are skipped, and the app says why.
 - Each file is written to a temporary copy first, then swapped in. A failure halfway through a file leaves the original intact.
